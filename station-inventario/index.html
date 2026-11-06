@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Station Ropa Deportiva – Punto de Venta e Inventario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
+    --success: #10b981;
+    --warning-bg: #fffbeb;
+    --warning-text: #b45309;
+    --zero-bg: #fef2f2;
+    --zero-text: #b91c1c;
+    --shadow: 0 1px 3px 0 rgba(0,0,0,0.05), 0 1px 2px -1px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  }
+
+  [data-theme="dark"] {
+    --bg: #090d16;
+    --surface: #131b2e;
+    --border: #1e293b;
+    --text: #f1f5f9;
+    --text-muted: #94a3b8;
+    --primary: #3b82f6;
+    --primary-hover: #60a5fa;
+    --danger: #f87171;
+    --danger-hover: #ef4444;
+    --success: #34d399;
+    --warning-bg: #272013;
+    --warning-text: #fde047;
+    --zero-bg: #2d1517;
+    --zero-text: #fca5a5;
+    --shadow: 0 1px 3px 0 rgba(0,0,0,0.4);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+  body { margin: 0; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  .mu { color: var(--text-muted); font-size: 0.88em; }
+
+  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 18px 0; margin-bottom: 24px; }
+  .brand-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+  .brand-info { display: flex; align-items: center; gap: 14px; }
+  .brand-logo { max-height: 48px; border-radius: 8px; }
+  .header-controls { display: flex; align-items: center; gap: 10px; }
+
+  .theme-toggle { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 7px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85em; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+  .theme-toggle:hover { border-color: var(--text-muted); }
+
+  nav[role="tablist"] { display: flex; gap: 6px; border-bottom: 1px solid var(--border); margin-top: 10px; }
+  nav button { background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); padding: 10px 16px; font-weight: 600; cursor: pointer; font-size: 0.95em; }
+  nav button[aria-selected="true"] { color: var(--primary); border-bottom-color: var(--primary); }
+
+  .cols { display: grid; grid-template-columns: 1fr 360px; gap: 20px; }
+  @media(max-width: 820px){ .cols { grid-template-columns: 1fr; } }
+  .card, .sale-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
+  .sticky { position: sticky; top: 20px; }
+
+  input, select { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 0.9em; outline: none; }
+  input:focus, select:focus { border-color: var(--primary); }
+  button { background: var(--surface); color: var(--text); border: 1px solid var(--border); padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.88em; }
+  button:hover { background: var(--bg); }
+  button.pri { background: var(--primary); color: #ffffff; border: none; }
+  button.pri:hover { background: var(--primary-hover); }
+  button.x { background: transparent; color: var(--danger); border: 1px solid var(--border); }
+  button.x:hover { border-color: var(--danger); background: var(--zero-bg); }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stats > div { background: var(--surface); border: 1px solid var(--border); padding: 14px; border-radius: 10px; text-align: center; box-shadow: var(--shadow); }
+  .stats b { display: block; font-size: 1.5em; font-weight: 700; }
+  .stats .warn { background: var(--warning-bg); color: var(--warning-text); border-color: transparent; }
+  .stats .zero { background: var(--zero-bg); color: var(--zero-text); border-color: transparent; }
+
+  .item { border-bottom: 1px solid var(--border); padding: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .item:last-child { border-bottom: none; }
+  .item-thumb { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); background: var(--bg); flex-shrink: 0; }
+  .item-info { flex: 1; min-width: 0; }
+  .item-info .nm { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item .qty { font-weight: 700; padding: 4px 10px; border-radius: 20px; background: var(--bg); border: 1px solid var(--border); font-size: 0.85em; display: inline-block; margin-top: 4px; }
+  .item .qty.l { background: var(--warning-bg); color: var(--warning-text); border: none; }
+  .item .qty.z { background: var(--zero-bg); color: var(--zero-text); border: none; }
+
+  .h { border-bottom: 1px solid var(--border); padding: 10px 0; }
+  .h:last-child { border-bottom: none; }
+  .row { display: flex; gap: 8px; align-items: center; }
+  .p { color: var(--success); font-weight: 700; }
+  .m { color: var(--danger); font-weight: 700; }
+
+  .cart-table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 14px; font-size: 0.88em; }
+  .cart-table th, .cart-table td { padding: 8px; text-align: left; border-bottom: 1px solid var(--border); }
+  .cart-table th { color: var(--text-muted); font-weight: 600; }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+  .modal-box { background: var(--surface); border: 1px solid var(--border); padding: 24px; border-radius: 16px; width: 100%; max-width: 400px; box-shadow: var(--shadow-md); }
+
+  #toast { position: fixed; bottom: 20px; right: 20px; background: var(--text); color: var(--bg); padding: 10px 18px; border-radius: 8px; display: none; font-weight: 500; box-shadow: var(--shadow-md); z-index: 2000; }
+</style>
+</head>
+<body>
+
+<!-- Plantilla HTML con rutas relativas a assets locales -->
+<template id="seed-products-template">
+  <div data-name="Balón de fútbol #5" data-qty="24" data-img="assets/products/balon-futbol.jpg"></div>
+  <div data-name="Balón de baloncesto #7" data-qty="18" data-img="assets/products/balon-baloncesto.jpg"></div>
+  <div data-name="Balón de voleibol" data-qty="15" data-img="assets/products/balon-voleibol.jpg"></div>
+  <div data-name="Guayos de fútbol talla 40" data-qty="8" data-img="assets/products/guayos.jpg"></div>
+  <div data-name="Tenis running talla 38" data-qty="7" data-img="assets/products/tenis.jpg"></div>
+  <div data-name="Camiseta Selección Colombia M" data-qty="14" data-img="assets/products/camiseta.jpg"></div>
+  <div data-name="Mancuerna 5 kg (par)" data-qty="8" data-img="assets/products/mancuernas.jpg"></div>
+  <div data-name="Colchoneta de yoga" data-qty="12" data-img="assets/products/colchoneta.jpg"></div>
+  <div data-name="Banda elástica de resistencia" data-qty="28" data-img="assets/products/banda.jpg"></div>
+  <div data-name="Guantes de boxeo 12 oz" data-qty="7" data-img="assets/products/guantes-boxeo.jpg"></div>
+  <div data-name="Botella deportiva 750 ml" data-qty="35" data-img="assets/products/botella.jpg"></div>
+</template>
+
+<!-- Login Demo -->
+<div id="login-screen" class="modal-overlay">
+  <div class="modal-box" style="text-align: center;">
+    <img src="assets/logo.png" alt="Station Logo" style="max-height: 55px; margin-bottom: 16px; border-radius: 8px;">
+    <h2 style="margin:0 0 6px 0; font-size: 1.4em;">Iniciar Sesión</h2>
+    <p class="mu" style="margin-top:0;">Demostración del Sistema POS</p>
+    <form id="login-form">
+      <input type="text" id="login-user" placeholder="Usuario" value="demo@station.com" required style="width:100%; margin: 6px 0;">
+      <input type="password" id="login-pass" placeholder="Contraseña" value="123456" required style="width:100%; margin: 6px 0;">
+      <button type="submit" class="pri" style="width:100%; margin-top:12px; padding:10px;">Ingresar a la Demo</button>
+    </form>
+  </div>
+</div>
+
+<!-- Modal para Editar Producto -->
+<div id="edit-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-box">
+    <h3 style="margin-top: 0; font-size: 1.1em;">Editar Producto</h3>
+    <input type="hidden" id="edit-id">
+    <div style="margin-bottom: 10px;">
+      <label style="display:block; font-size: 0.85em; font-weight: 600; margin-bottom: 4px;">Nombre del Producto</label>
+      <input type="text" id="edit-name" style="width: 100%;">
+    </div>
+    <div style="margin-bottom: 14px;">
+      <label style="display:block; font-size: 0.85em; font-weight: 600; margin-bottom: 4px;">Ruta de Imagen Local</label>
+      <input type="text" id="edit-img" placeholder="assets/products/default.jpg" style="width: 100%;">
+    </div>
+    <div class="row" style="justify-content: flex-end;">
+      <button type="button" id="btn-cancel-edit">Cancelar</button>
+      <button type="button" class="pri" id="btn-save-edit">Guardar Cambios</button>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="wrap">
+    <div class="brand-header">
+      <div class="brand-info">
+        <img src="assets/logo.png" alt="Station Logo" class="brand-logo">
+        <div>
+          <h1 style="margin:0; font-size:1.4em; font-weight: 700;">Station Ropa Deportiva</h1>
+          <p style="margin:0;" class="mu">Control POS e Inventario Kardex</p>
+        </div>
+      </div>
+      <div class="header-controls">
+        <button id="theme-btn" class="theme-toggle" aria-label="Cambiar Tema">🌙 Modo Oscuro</button>
+        <button id="logout-btn" class="x" style="padding:6px 10px;">Salir</button>
+      </div>
+    </div>
+    <nav role="tablist" aria-label="Secciones">
+      <button role="tab" id="t-ventas" aria-selected="true" aria-controls="v-ventas" data-tab="ventas">Registro de Ventas</button>
+      <button role="tab" id="t-inv" aria-selected="false" aria-controls="v-inv" data-tab="inv">Inventario</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Vista: Registro de Ventas -->
+  <section class="view" id="v-ventas" role="tabpanel" aria-labelledby="t-ventas">
+    <div style="margin-bottom: 16px;">
+      <h2 style="margin:0 0 4px 0; font-size:1.2em;">Registrar Nueva Venta (Múltiples Productos)</h2>
+      <div class="mu">Agrega los productos deseados al carrito antes de confirmar</div>
+    </div>
+
+    <div class="cols">
+      <div>
+        <div class="sale-card">
+          <h3 style="margin-top:0; font-size:1em;">1. Seleccionar Producto</h3>
+          <div class="row" style="margin-top:10px; align-items: flex-end;">
+            <div style="flex:2;">
+              <label for="v-item" style="display:block; font-size:0.85em; font-weight:600; margin-bottom:4px;">Producto</label>
+              <select id="v-item" style="width:100%;"></select>
+            </div>
+            <div style="flex:1;">
+              <label for="v-qty" style="display:block; font-size:0.85em; font-weight:600; margin-bottom:4px;">Cantidad</label>
+              <input id="v-qty" type="number" min="1" value="1" style="width:100%;">
+            </div>
+            <div style="flex:1;">
+              <label for="v-price" style="display:block; font-size:0.85em; font-weight:600; margin-bottom:4px;">Precio ($)</label>
+              <input id="v-price" type="number" min="0" step="500" value="45000" style="width:100%;">
+            </div>
+            <button class="pri" id="btn-add-cart" style="padding: 9px 14px;">+ Añadir</button>
+          </div>
+        </div>
+
+        <div class="sale-card">
+          <h3 style="margin-top:0; font-size:1em;">2. Carrito de la Venta</h3>
+          <table class="cart-table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cant.</th>
+                <th>P. Unit.</th>
+                <th>Subtotal</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="cart-list"></tbody>
+          </table>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:10px; border-top:1px dashed var(--border);">
+            <div style="font-size:1.1em;"><b>Total Venta:</b> <span id="cart-total" style="color:var(--primary); font-weight:700;">$0</span></div>
+          </div>
+
+          <div style="margin-top:14px;">
+            <label for="v-note" style="display:block; font-size:0.85em; font-weight:600; margin-bottom:4px;">Cliente / Nota opcional</label>
+            <input id="v-note" placeholder="Ej: Venta presencial / Cliente Juan" style="width:100%;">
+          </div>
+
+          <button class="pri" id="btn-submit-cart" style="width:100%; padding:12px; margin-top:14px; font-size:1em;">🛒 Confirmar Venta Completa</button>
+        </div>
+      </div>
+
+      <div class="card sticky">
+        <h3 style="margin-top:0; font-size:1em;">Últimas Ventas Realizadas</h3>
+        <div id="sales-history"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vista: Inventario -->
+  <section class="view" id="v-inv" role="tabpanel" aria-labelledby="t-inv" hidden>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+      <h2 style="margin:0; font-size:1.2em;">Control de Existencias</h2>
+      <div class="row"><button id="xl">⬇ Descargar Excel</button><button class="x" id="rs">Restablecer demo</button></div>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 style="margin-top:0; font-size:1em;">Nuevo Artículo</h3>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div class="row">
+              <input id="n" placeholder="Nombre del artículo" style="flex:1;" aria-label="Nombre del artículo">
+              <input id="c" type="number" min="0" value="0" style="width:80px;" aria-label="Cantidad inicial">
+            </div>
+            <div class="row">
+              <input id="img-url" placeholder="Ruta de imagen opcional (ej: assets/products/balon.jpg)" style="flex:1;">
+              <button class="pri" id="add">Agregar</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0; font-size:1em;">Catálogo de Productos</h3>
+          <input id="q" placeholder="Buscar producto…" style="width:100%; margin-bottom:12px;" aria-label="Buscar artículo">
+          <div id="items"></div>
+        </div>
+      </div>
+      <div class="card sticky">
+        <h3 style="margin-top:0; font-size:1em;">Movimientos Kardex</h3>
+        <div id="hist"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="toast" role="status"></div>
+
+<script src="vendor/xlsx.full.min.js"></script>
+<script src="js/seed.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
